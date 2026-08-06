@@ -1,0 +1,27 @@
+# Swift / SwiftPM
+.build/
+.swiftpm/
+*.xcodeproj
+DerivedData/
+.DS_Store
+
+# Vendored development-guidelines framework (managed, replaceable)
+/development-guidelines/
+/.claude/
+/.claude/skills/
+
+# Internal planning docs and tooling config. Kept on disk for local work but
+# never published: they carry project names, local paths and business context
+# that have no place in a public repository.
+/project/
+/.quality-gate.yml
+
+# Local secrets — never committed
+.env
+.env.*
+*.credentials
+
+# Emacs autosave / lock files
+#*#
+.#*
+*~
