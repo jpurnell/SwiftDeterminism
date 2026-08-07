@@ -10,10 +10,17 @@ DerivedData/
 /.claude/
 /.claude/skills/
 
-# Internal planning docs and tooling config. Kept on disk for local work but
-# never published: they carry project names, local paths and business context
-# that have no place in a public repository.
-/project/
+# Internal planning docs and tooling config, never published: they carry project
+# names, local paths and business context that have no place in a public
+# repository. They live in the private SwiftDeterminism-docs repo, reached here
+# through a symlink so tooling expecting project/master_plan.md keeps working:
+#
+#     git clone git@github.com:jpurnell/SwiftDeterminism-docs.git
+#     ln -s ../SwiftDeterminism-docs SwiftDeterminism/project
+#
+# No trailing slash on /project — it is a symlink, and `/project/` would match
+# only a directory, leaving the link untracked-but-committable.
+/project
 /.quality-gate.yml
 
 # Local secrets — never committed
