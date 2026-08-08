@@ -7,6 +7,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.1] — 2026-08-08
+
+### Fixed
+
+- **Declares iOS support.** The package declared only `.macOS(.v14)`, so iOS consumers
+  resolved it at the default platform minimum and failed to compile: `TimeZone.gmt` in
+  `FormattingEnvironment` requires iOS 16. Found downstream when an iOS app took
+  BusinessMath 2.5.2, which depends on this package.
+
+  The restriction was never a capability statement — the sources are Foundation-only and
+  the algorithms are bit-exact on every platform. Nothing about the output changes.
+
 ## [1.0.0] — 2026-08-06
 
 First stable release. The output sequences are now part of the public API: changing one is a

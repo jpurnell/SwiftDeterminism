@@ -13,8 +13,13 @@ import PackageDescription
 // with no test-framework dependency.
 let package = Package(
     name: "SwiftDeterminism",
+    // Determinism is platform-independent: the sources are Foundation-only, and
+    // the algorithms are bit-exact everywhere. The macOS-only declaration was not
+    // a capability statement, and it blocked iOS consumers — `TimeZone.gmt`
+    // requires iOS 16, and an undeclared platform defaults below that.
     platforms: [
-        .macOS(.v14)
+        .macOS(.v14),
+        .iOS(.v17)
     ],
     products: [
         .library(name: "SwiftDeterminism", targets: ["SwiftDeterminism"])
