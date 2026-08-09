@@ -1,0 +1,82 @@
+name: Cross-Platform
+
+# The package's central claim is that the same seed produces the same sequence on
+# every platform. Through 1.1.0 that was verified by hand on a single Mac, and the
+# Linux half was reasoned about rather than compiled. This workflow is what turns
+# it into evidence.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux:
+    name: Linux (Swift ${{ matrix.swift }})
+    runs-on: ubuntu-latest
+    container: swift:${{ matrix.swift }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # 6.3 matches the roseclub.org deployment toolchain; 6.2 is the package's
+        # declared swift-tools-version floor.
+        swift: ['6.2', '6.3']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: swift build -v
+
+      # The generators are portable by construction and must pass everywhere.
+      # FormattingEnvironment routes through ICU, which differs between Darwin
+      # Foundation and swift-corelibs-foundation — if anything fails here, it is
+      # expected to be an exact-string formatting assertion, and that is precisely
+      # the scoped guarantee this job exists to measure rather than assume.
+      - name: Test
+        run: swift test
+
+  apple:
+    name: ${{ matrix.platform }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macOS, iOS, tvOS, watchOS, visionOS]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      # Builds every declared platform. An Apple platform omitted from
+      # `platforms:` in Package.swift is not excluded — it is floored at SPM's
+      # default, below what the sources need, and fails to compile. That shipped
+      # twice (1.0.0 broke iOS, 1.0.1 left tvOS/watchOS/visionOS broken). This
+      # matrix is the check that would have caught both.
+      - name: Build
+        run: |
+          xcodebuild -scheme SwiftDeterminism \
+            -destination "generic/platform=${{ matrix.platform }}" \
+            -skipPackagePluginValidation \
+            build
+
+  test-macos:
+    name: Test (macOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      # Darwin is where the exact-string formatting assertions are guaranteed, so
+      # this is the run that must stay green for the full suite.
+      - name: Test
+        run: swift test
