@@ -32,6 +32,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `FloatingPointFormatStyle` in `machineNumberStyle` is now the binding constraint. Going lower
   would mean putting that method behind `@available`, pushing the check onto every caller.
 
+### Documentation
+
+- README Status section rewritten: it still described the 0.1.0 milestone, and linked
+  `project/master_plan.md`, which is not published in this repository and never resolved for
+  anyone who cloned it. Status is now stated inline and links CHANGELOG.md instead.
+
 ### Notes
 
 - Deployment floors are requests, not guarantees about a given toolchain's output: a toolchain

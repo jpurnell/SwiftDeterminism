@@ -68,8 +68,21 @@ verified on Darwin only.
 
 ## Status
 
-`SplitMix64` and its known-answer tests. See [`project/master_plan.md`](project/master_plan.md)
-for the migration roadmap and what is deliberately excluded.
+**1.1.0 — stable.** The output sequences are part of the public API: changing one is a major
+version. Ships `SplitMix64` and `Xoshiro256StarStar` (both checkpointable via `currentState`
+and `Codable`), `WallClock`, `IdentifierSource`, `FormattingEnvironment`, `StableOrdering`,
+and `DeterministicContext`. See [CHANGELOG.md](CHANGELOG.md) for the release history.
+
+**Deliberately excluded**, and not planned:
+
+- **Distributions** — normal, uniform, triangular belong in a statistics library; this
+  produces bits
+- **A CSPRNG wrapper** — `SystemRandomNumberGenerator` already is one, and is correct
+- **A global default generator** — a shared seeded generator makes tests order-dependent, so
+  one test's draws shift another's and a suite passes until a test is skipped
+
+**Known gap:** there is no CI. Every platform claim above was verified by hand locally, and
+the Linux/Windows claim is reasoned from the sources rather than compiled.
 
 ## License
 
