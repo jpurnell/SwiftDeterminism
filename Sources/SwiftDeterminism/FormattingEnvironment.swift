@@ -71,8 +71,26 @@ public struct FormattingEnvironment: Sendable, Equatable {
     /// a test that only fails between 23:00 and 01:00 is worse than one that always does.
     public static let posix = FormattingEnvironment(
         locale: Locale(identifier: "en_US_POSIX"),
-        timeZone: TimeZone(secondsFromGMT: 0) ?? .gmt
+        timeZone: utc
     )
+
+    /// UTC, resolved without `TimeZone.gmt`.
+    ///
+    /// `.gmt` is macOS 13 / iOS 16 / tvOS 16 / watchOS 9. Every other API this package
+    /// touches is at least a generation older, so spending it on a fallback that cannot be
+    /// reached would raise the deployment floor for every consumer to buy nothing.
+    ///
+    /// `TimeZone(secondsFromGMT:)` is documented to fail only for an offset outside ±18
+    /// hours, so zero always succeeds. The unreachable branch traps rather than substituting
+    /// `.current`: silently formatting in the machine's zone is precisely the failure
+    /// `posix` exists to rule out, and a determinism guarantee that degrades quietly is
+    /// worse than one that stops.
+    private static let utc: TimeZone = {
+        guard let utc = TimeZone(secondsFromGMT: 0) else {
+            preconditionFailure("TimeZone(secondsFromGMT: 0) returned nil; a zero offset is always in range.")
+        }
+        return utc
+    }()
 
     /// Whatever the running machine is set to.
     ///

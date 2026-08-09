@@ -54,6 +54,18 @@ verifiers. `SystemRandomNumberGenerator` is the standard library's CSPRNG and is
 Two of the four implementations this consolidates are product code — Monte Carlo simulation
 and game state. This ships as an ordinary library with no test-framework dependency.
 
+## Requirements
+
+Swift 6 language mode. macOS 12, iOS 15, tvOS 15, watchOS 8, visionOS 1 — set by
+`FloatingPointFormatStyle` in `FormattingEnvironment`, the newest API the package touches.
+Nothing else here is newer than macOS 10.12.
+
+Those floors are the Apple deployment minimums, not a list of supported platforms. The
+sources are Foundation-only with no platform conditionals, so Linux and Windows build from
+the same code — SPM ignores the `platforms:` list off-Apple. The caveat in the table above
+still applies: `FormattingEnvironment` routes through ICU, so its exact-string behavior is
+verified on Darwin only.
+
 ## Status
 
 `SplitMix64` and its known-answer tests. See [`project/master_plan.md`](project/master_plan.md)

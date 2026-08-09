@@ -7,6 +7,41 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-08-08
+
+### Added
+
+- **tvOS, watchOS and visionOS support.** 1.0.1 fixed iOS the same way it broke: by naming one
+  platform. An Apple platform left out of `platforms:` is not excluded, it is floored at SPM's
+  default — below what the sources need — so every unnamed platform failed to compile for the
+  same reason iOS did. All five are now declared.
+
+### Changed
+
+- **Deployment floors lowered a full generation**, to macOS 12 / iOS 15 / tvOS 15 / watchOS 8 /
+  visionOS 1 (from macOS 14 / iOS 17). No source behavior changes; existing consumers are
+  unaffected.
+
+  What held the floor up was `TimeZone.gmt` (macOS 13 / iOS 16 / tvOS 16 / watchOS 9) appearing
+  as the fallback arm of `TimeZone(secondsFromGMT: 0) ?? .gmt` — a branch that cannot be taken,
+  since a zero offset is always in range. Removing it removes the availability requirement
+  outright, with no `@available` gate. The now-unreachable branch traps rather than falling back
+  to `.current`: silently formatting in the machine's zone is the failure `posix` exists to rule
+  out, and a determinism guarantee that degrades quietly is worse than one that stops.
+
+  `FloatingPointFormatStyle` in `machineNumberStyle` is now the binding constraint. Going lower
+  would mean putting that method behind `@available`, pushing the check onto every caller.
+
+### Notes
+
+- Deployment floors are requests, not guarantees about a given toolchain's output: a toolchain
+  silently clamps up to its own supported minimum, with no build warning. Xcode 27 emits this as
+  `watchos9.0` regardless of the declared `.v8`. Harmless — newer toolchains simply cannot target
+  the older floor.
+- Verified with `xcodebuild` against generic macOS, iOS, tvOS, watchOS and visionOS destinations.
+  Linux and Windows remain unverified by build — the reasoning is sound (Foundation-only, no
+  platform conditionals, `platforms:` ignored off-Apple), but no CI exercises it.
+
 ## [1.0.1] — 2026-08-08
 
 ### Fixed
@@ -89,6 +124,8 @@ major version.
 - A global default generator — a shared seeded generator makes tests order-dependent, so a
   suite passes until a test is skipped
 
-[Unreleased]: https://github.com/jpurnell/SwiftDeterminism/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/jpurnell/SwiftDeterminism/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/jpurnell/SwiftDeterminism/releases/tag/v1.1.0
+[1.0.1]: https://github.com/jpurnell/SwiftDeterminism/releases/tag/v1.0.1
 [1.0.0]: https://github.com/jpurnell/SwiftDeterminism/releases/tag/v1.0.0
 [0.1.0]: https://github.com/jpurnell/SwiftDeterminism/releases/tag/v0.1.0

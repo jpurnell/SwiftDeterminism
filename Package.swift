@@ -14,12 +14,26 @@ import PackageDescription
 let package = Package(
     name: "SwiftDeterminism",
     // Determinism is platform-independent: the sources are Foundation-only, and
-    // the algorithms are bit-exact everywhere. The macOS-only declaration was not
-    // a capability statement, and it blocked iOS consumers — `TimeZone.gmt`
-    // requires iOS 16, and an undeclared platform defaults below that.
+    // the algorithms are bit-exact everywhere. This list is not a capability
+    // statement — it raises the Apple deployment floors to the highest API the
+    // sources touch, which SPM's defaults sit below. Omitting a platform here does
+    // not exclude it, it floors it too low to compile. Non-Apple platforms ignore
+    // this list entirely and build from the same Foundation-only sources.
+    //
+    // The binding constraint is `FloatingPointFormatStyle` in FormattingEnvironment.
+    // Going lower means gating `machineNumberStyle` behind `@available`, which costs
+    // a caller more than it saves. Nothing else here is newer than macOS 10.12.
+    //
+    // These are floor requests, not guarantees about what a given Xcode will emit: a
+    // toolchain silently clamps up to its own supported minimum. Xcode 27 builds this
+    // as watchos9.0 regardless of the .v8 below. Harmless — it only means newer
+    // toolchains cannot target the older floor, not that the declaration is wrong.
     platforms: [
-        .macOS(.v14),
-        .iOS(.v17)
+        .macOS(.v12),
+        .iOS(.v15),
+        .tvOS(.v15),
+        .watchOS(.v8),
+        .visionOS(.v1)
     ],
     products: [
         .library(name: "SwiftDeterminism", targets: ["SwiftDeterminism"])

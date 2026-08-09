@@ -74,15 +74,16 @@ struct WallClockTests {
 
     /// A fixture derived from the present is not a fixture.
     @Test("The shared fixture is a fixed instant")
-    func fixtureIsFixed() {
+    func fixtureIsFixed() throws {
         #expect(Date.fixture.timeIntervalSince1970 == 1_767_225_600)
         var components = DateComponents()
         components.year = 2026
         components.month = 1
         components.day = 1
         var calendar = Calendar(identifier: .gregorian)
-        // swiftlint:disable:next force_unwrapping
-        calendar.timeZone = TimeZone(identifier: "UTC") ?? .gmt
+        // Resolved here rather than read from `FormattingEnvironment.posix` so this stays an
+        // independent check on the fixture's value, not a restatement of the package's own UTC.
+        calendar.timeZone = try #require(TimeZone(identifier: "UTC"))
         #expect(calendar.date(from: components) == Date.fixture)
     }
 }
