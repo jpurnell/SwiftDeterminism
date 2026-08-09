@@ -7,6 +7,29 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **CI — cross-platform verification.** Every push now builds all five Apple platforms and
+  builds plus tests on Linux under Swift 6.2 and 6.3. The Apple matrix is the check that would
+  have caught the platform bug both times it shipped.
+
+### Changed
+
+- **The Linux claim is now measured rather than reasoned.** All 57 tests pass on
+  swift-corelibs-foundation under both toolchains, including the exact-string formatting
+  assertions previously scoped to Darwin. The scoping stays — ICU divergence remains a real
+  risk and the guarantee should not be widened on two toolchains' evidence — but it now
+  describes a risk rather than an untested assumption.
+
+### Notes
+
+- The project's quality gate does not run in CI. It lives in the private `quality-gate-swift`
+  repository, and GitHub does not permit a public repository to call a reusable workflow from
+  a private one — the run fails at file validation before any job starts. Granting Actions
+  access does not lift this; it is already set to `user`. Resolving it means making that repo
+  public, or running the gate locally via the pre-commit hook. The gate does pass locally
+  (`--check all --exclude status`).
+
 ## [1.1.0] — 2026-08-08
 
 ### Added

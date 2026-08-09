@@ -81,8 +81,13 @@ and `DeterministicContext`. See [CHANGELOG.md](CHANGELOG.md) for the release his
 - **A global default generator** — a shared seeded generator makes tests order-dependent, so
   one test's draws shift another's and a suite passes until a test is skipped
 
-**Known gap:** there is no CI. Every platform claim above was verified by hand locally, and
-the Linux/Windows claim is reasoned from the sources rather than compiled.
+**Verified in CI** on every push: Linux (Swift 6.2 and 6.3) builds and runs the full suite,
+and all five Apple platforms build. Linux is no longer a claim — the 57 tests pass there,
+including the ICU-backed formatting assertions the table above scopes to Darwin. That caveat
+now describes a risk rather than an untested assumption.
+
+**Known gap:** Windows is still unverified, and the project's own quality gate does not run
+here — it lives in a private repository, which a public repository's Actions cannot call.
 
 ## License
 
