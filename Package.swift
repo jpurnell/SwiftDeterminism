@@ -44,6 +44,11 @@ let package = Package(
     targets: [
         .target(
             name: "SwiftDeterminism",
+            // `.copy`, not `exclude`. SwiftPM reports an undeclared `.docc` directory as an
+            // unhandled file, and excluding it silences that while removing the catalogue from
+            // the target — doc-lint then passes on a landing page DocC never read. Verified:
+            // under `exclude` the curated page is absent from the generated archive.
+            resources: [.copy("SwiftDeterminism.docc")],
             swiftSettings: [.swiftLanguageMode(.v6)]
         ),
         .testTarget(

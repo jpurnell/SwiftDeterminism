@@ -73,6 +73,11 @@ version. Ships `SplitMix64` and `Xoshiro256StarStar` (both checkpointable via `c
 and `Codable`), `WallClock`, `IdentifierSource`, `FormattingEnvironment`, `StableOrdering`,
 and `DeterministicContext`. See [CHANGELOG.md](CHANGELOG.md) for the release history.
 
+**Documentation** is a DocC catalogue in the package —
+`swift package generate-documentation --target SwiftDeterminism`. The landing page carries the
+scoping table above, because which guarantee applies to which type is the thing worth knowing
+before reaching for one.
+
 **Deliberately excluded**, and not planned:
 
 - **Distributions** — normal, uniform, triangular belong in a statistics library; this

@@ -9,6 +9,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **A DocC catalogue.** `Sources/SwiftDeterminism/SwiftDeterminism.docc` gives the module a
+  curated landing page — the scoping table, the sequence-is-the-API contract, and the
+  security warning — and groups the public API by role rather than alphabetically. The types
+  were already documented; what was missing was the page that says which guarantee applies to
+  which of them.
+
+  The catalogue is declared as `resources: [.copy(...)]` rather than `exclude:`. SwiftPM
+  reports an undeclared `.docc` directory as an unhandled file, and both declarations silence
+  that, but `exclude` removes the catalogue from the target: doc-lint then reports a pass on a
+  landing page DocC never read. Verified against the generated archive — under `exclude` the
+  curated page is absent from it.
+
 - **CI — cross-platform verification.** Every push now builds all five Apple platforms and
   builds plus tests on Linux under Swift 6.2 and 6.3. The Apple matrix is the check that would
   have caught the platform bug both times it shipped.
