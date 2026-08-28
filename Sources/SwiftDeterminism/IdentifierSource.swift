@@ -11,6 +11,11 @@ import Foundation
 /// ## Example
 ///
 /// ```swift
+/// struct Account {
+///     let id: UUID
+///     let name: String
+/// }
+///
 /// struct Directory {
 ///     let identifiers: any IdentifierSource
 ///     mutating func add(_ name: String) -> Account {

@@ -30,6 +30,11 @@ import Foundation
 ///     }
 /// }
 ///
+/// // In production the seed comes from entropy and is logged, so the run can
+/// // be replayed; in a test it is chosen.
+/// var entropy = SystemRandomNumberGenerator()
+/// let seed = entropy.next()
+///
 /// Report(context: .system(rootSeed: seed))   // production, with a seed you logged
 /// Report(context: .fixed(seed: 42))           // a test: same output every run
 /// ```
@@ -83,7 +88,7 @@ public struct DeterministicContext: Sendable {
     /// ```swift
     /// var entropy = SystemRandomNumberGenerator()
     /// let seed = entropy.next()
-    /// logger.info("run seed \(seed)")            // now the run can be replayed
+    /// print("run seed \(seed)")                 // log it; now the run can be replayed
     /// let context = DeterministicContext.system(rootSeed: seed)
     /// ```
     ///

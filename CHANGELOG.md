@@ -7,6 +7,31 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+- **Every `## Usage` example compiles.** Eight `doc-comment-code` errors, surfaced
+  when that checker briefly entered the default set upstream. They had been wrong
+  for as long as they existed.
+
+  `DeterministicContext` used a `seed` it never obtained and a `logger` this
+  package does not vend — the seed is now drawn from
+  `SystemRandomNumberGenerator` in the fence, which is the point of the example,
+  and the log line is a `print`. `IdentifierSource` invented an `Account` type,
+  now declared in the fence with a `UUID` id, matching what `next()` returns.
+
+  `ManualWallClock`'s example asserted with `#expect`, which is Swift Testing —
+  not available to a fence compiled against Foundation and this module. It now
+  declares the `Credential` and `issue(using:)` it was already assuming, and
+  asserts with `precondition`, so the example demonstrates the expiry boundary
+  by executing it rather than by gesturing at a test.
+
+- **`project/master_plan.md` no longer contradicts itself.** Two checklist items
+  both opened `CI — `, so `doc-generated` read one label as checked on line 151
+  and unchecked on line 153. They are different pieces of work: the
+  cross-platform matrix, which is done, and the quality gate in CI, which is
+  blocked. Renamed so each says which it is.
+
+  45 of 45 checkers, 0 errors, 0 warnings.
+
 ### Added
 
 - **A DocC catalogue.** `Sources/SwiftDeterminism/SwiftDeterminism.docc` gives the module a

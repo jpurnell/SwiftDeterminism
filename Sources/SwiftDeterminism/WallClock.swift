@@ -78,10 +78,21 @@ public struct FixedWallClock: WallClock {
 /// timing-dependent: the same test passes on a fast machine and fails on a loaded one.
 ///
 /// ```swift
+/// struct Credential {
+///     let expiresAt: Date
+///     func hasExpired(now: Date) -> Bool { now >= expiresAt }
+/// }
+/// func issue(using clock: any WallClock) -> Credential {
+///     Credential(expiresAt: clock.now.addingTimeInterval(3600))
+/// }
+///
 /// let clock = ManualWallClock(at: .fixture)
 /// let credential = issue(using: clock)      // expires in 3600s
-/// clock.advance(by: 3599); #expect(!credential.hasExpired(now: clock.now))
-/// clock.advance(by: 2);    #expect(credential.hasExpired(now: clock.now))
+///
+/// clock.advance(by: 3599)
+/// precondition(!credential.hasExpired(now: clock.now))
+/// clock.advance(by: 2)
+/// precondition(credential.hasExpired(now: clock.now))
 /// ```
 ///
 /// A reference type deliberately: callers hold the same clock and one of them advances it.
