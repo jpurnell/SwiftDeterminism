@@ -8,17 +8,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Corrected
-- **1.2.0's note overstates one fact.** It says a package "already depended on this one" and
-  wrote its own `gregorianUTC` "instead of reaching for the one already in its manifest". The
-  manifest part is literally true — and misleading. `SwiftDeterminism` is declared in
-  BusinessMath's `Package.swift` but **linked by no target**, so the module was never in scope in
-  the file where the duplicate was written. Reaching it needed a manifest edit, not an
-  autocomplete.
+- **A correction to 1.2.0's note, itself withdrawn.** An entry here briefly claimed that
+  `SwiftDeterminism` was declared in BusinessMath's manifest but linked by no target, making
+  1.2.0's story an overstatement. That was wrong: `swift package describe` reports the
+  `BusinessMath` target's product dependencies as `Collections, Crypto, Numerics,
+  SwiftDeterminism`. The module is in scope.
 
-  The release's argument survives — four repositories wrote the same thing in one week, and 1.0.0
-  shipped five weeks before the duplicate — but the sharpest sentence is not what happened. Noted
-  here rather than by editing 1.2.0, because a published release is a record of what was said at
-  the time.
+  The mistake was searching the target's block for the literal string `SwiftDeterminism` in a
+  manifest that assigns dependencies through a variable (`dependencies: businessMathDeps`) — a
+  text search over a manifest that computes its answer.
+
+  **1.2.0's note was right as written**, in its strongest form: the module was one `import` away
+  in the file where the duplicate was written, five weeks after it shipped, in the act of fixing
+  the defect it prevents.
 
 ## [1.2.0] — 2026-09-18
 
