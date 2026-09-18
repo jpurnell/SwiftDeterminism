@@ -7,6 +7,27 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+- **`Calendar.gregorianUTC`** and **`FormattingEnvironment.isoDateParser()`** — the fixed calendar
+  and the ISO `yyyy-MM-dd` parser, under names a person reaches for.
+
+  Neither is a new capability. `FormattingEnvironment.posix.calendar` has been exactly this since
+  1.0.0, and `gregorianUTC` is defined in terms of it so the two cannot drift. What is new is that
+  it can be found: on 2026-09-10 a package that **already depended on this one** wrote its own
+  `gregorianUTC`, in a commit titled *"the coupon grid no longer moves with the machine's time
+  zone"* — the exact defect this prevents, fixed by writing a new global instead of reaching for
+  the one already in its manifest. Three more repositories reinvented it the same week. Nobody
+  typing *"I need a fixed calendar"* arrives at a property of something called
+  `FormattingEnvironment`; that name answers a question about formatting, and the question being
+  asked is about arithmetic.
+
+  The parser ships alongside because pinning half is worse than pinning neither. A fix that
+  pinned the parse and left the render ambient moved every date back a day west of UTC —
+  `"2024-01-15"` rendered as `01/14/2024` — and only there. The locale picks the pattern; the time
+  zone picks the day. `FixedCalendarTests` asserts that failure rather than describing it.
+
+  Proposal: `plans/proposals/AFixedCalendarNobodyCanFind.md` in the docs companion.
+
 ### Fixed
 - **Every `## Usage` example compiles.** Eight `doc-comment-code` errors, surfaced
   when that checker briefly entered the default set upstream. They had been wrong
