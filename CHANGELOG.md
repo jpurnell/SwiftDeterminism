@@ -5,6 +5,21 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Corrected
+- **1.2.0's note overstates one fact.** It says a package "already depended on this one" and
+  wrote its own `gregorianUTC` "instead of reaching for the one already in its manifest". The
+  manifest part is literally true — and misleading. `SwiftDeterminism` is declared in
+  BusinessMath's `Package.swift` but **linked by no target**, so the module was never in scope in
+  the file where the duplicate was written. Reaching it needed a manifest edit, not an
+  autocomplete.
+
+  The release's argument survives — four repositories wrote the same thing in one week, and 1.0.0
+  shipped five weeks before the duplicate — but the sharpest sentence is not what happened. Noted
+  here rather than by editing 1.2.0, because a published release is a record of what was said at
+  the time.
+
 ## [1.2.0] — 2026-09-18
 
 ### Added
