@@ -5,7 +5,29 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0] — 2026-09-18
+
+### Added
+- **`Calendar.iso8601UTC`** — the sibling ``gregorianUTC`` deliberately is not.
+
+  Week is the one component where the calendar *system* changes the answer for a fixed instant.
+  ISO 8601 starts its week on Monday and gives week 1 to the week holding the first Thursday;
+  Gregorian starts on Sunday and takes whichever week holds January 1st. For `2027-01-01` — a
+  Friday — ISO says **2026-W53** and Gregorian says **2027-W01**. Same instant, different year,
+  and nothing downstream can tell which one it was handed.
+
+  So pinning the zone is not enough here, and `gregorianUTC` is the wrong fix rather than a
+  partial one. Found by a static rule reading its own repository's `Sources/`: two functions
+  named `isoWeekLabel`, one pinning UTC and one not, in modules that both feed the same
+  dashboard.
+
+  Use it *only* for `.weekOfYear` and `.yearForWeekOfYear`. ``gregorianUTC`` remains the default
+  for everything else, where swapping the system buys nothing.
+
+### Documentation
+- Both fixed calendars are now curated in the DocC landing page. 1.2.0 shipped `gregorianUTC`
+  arguing that the capability was not new, only *findable* — and then did not list it in the one
+  place a person browses. The Topics section closes that.
 
 ### Corrected
 - **A correction to 1.2.0's note, itself withdrawn.** An entry here briefly claimed that
@@ -228,7 +250,9 @@ major version.
 - A global default generator — a shared seeded generator makes tests order-dependent, so a
   suite passes until a test is skipped
 
-[Unreleased]: https://github.com/jpurnell/SwiftDeterminism/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/jpurnell/SwiftDeterminism/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/jpurnell/SwiftDeterminism/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/jpurnell/SwiftDeterminism/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/jpurnell/SwiftDeterminism/releases/tag/v1.1.0
 [1.0.1]: https://github.com/jpurnell/SwiftDeterminism/releases/tag/v1.0.1
 [1.0.0]: https://github.com/jpurnell/SwiftDeterminism/releases/tag/v1.0.0

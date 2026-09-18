@@ -48,6 +48,42 @@ extension Calendar {
     public static var gregorianUTC: Calendar {
         FormattingEnvironment.posix.calendar
     }
+
+    /// ISO 8601, pinned to UTC — for week numbers, and only for those.
+    ///
+    /// ``gregorianUTC`` is the default and answers almost every question. This one exists because
+    /// *week* is the one component where the calendar system changes the answer for a fixed
+    /// instant. ISO 8601 starts its week on Monday and assigns week 1 to the week containing the
+    /// first Thursday; Gregorian starts on Sunday and takes whichever week holds January 1st. For
+    /// a date in late December or early January the two disagree on both the week **and the
+    /// year**, so `yearForWeekOfYear` off the wrong system produces a label that is off by one in
+    /// a way nothing downstream can detect.
+    ///
+    /// ```swift
+    /// import Foundation
+    ///
+    /// let parser = FormattingEnvironment.posix.isoDateParser()
+    /// let date = parser.date(from: "2027-01-01") ?? Date()
+    ///
+    /// let calendar = Calendar.iso8601UTC
+    /// let year = calendar.component(.yearForWeekOfYear, from: date)   // 2026, not 2027
+    /// let week = calendar.component(.weekOfYear, from: date)          // 53, not 1
+    /// print("\(year)-W\(week)")
+    /// ```
+    ///
+    /// Found by a gate rule reading its own source: two functions named `isoWeekLabel` in one
+    /// repository, one pinning UTC and one not, producing different labels for the same instant
+    /// depending on which module happened to build the dashboard.
+    ///
+    /// Reach for this only when computing `.weekOfYear` or `.yearForWeekOfYear`. For everything
+    /// else ``gregorianUTC`` is the right default, and swapping the system buys nothing.
+    public static var iso8601UTC: Calendar {
+        FormattingEnvironment(
+            locale: FormattingEnvironment.posix.locale,
+            timeZone: FormattingEnvironment.posix.timeZone,
+            calendarIdentifier: .iso8601
+        ).calendar
+    }
 }
 
 extension FormattingEnvironment {

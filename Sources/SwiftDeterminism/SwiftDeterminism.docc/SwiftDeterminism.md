@@ -81,6 +81,16 @@ simulation and game state. It ships as an ordinary library with no test-framewor
 
 - ``FormattingEnvironment``
 
+### Fixed calendars
+
+The point of these is findability. `FormattingEnvironment.posix.calendar` has been exactly
+`gregorianUTC` since 1.0.0, and was still reinvented by a package that already depended on this
+one — nobody typing *"I need a fixed calendar"* arrives at a property of something named for
+formatting.
+
+- ``Foundation/Calendar/gregorianUTC``
+- ``Foundation/Calendar/iso8601UTC``
+
 ### Collection order
 
 - ``StableOrdering``
