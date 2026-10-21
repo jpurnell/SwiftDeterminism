@@ -96,4 +96,4 @@ here — it lives in a private repository, which a public repository's Actions c
 
 ## License
 
-Proprietary.
+MIT — see [LICENSE](LICENSE).
